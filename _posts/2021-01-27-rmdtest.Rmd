@@ -1,9 +1,8 @@
 ---
-title: "assignment2"
-author: "조근수"
-date: '2020 9 13 '
-output: html_document
+layout: single
+title:  "rmd파일테스트"
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)

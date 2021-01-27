@@ -1,9 +1,10 @@
 ---
-title: "블로그 설명서"
+title: "About Me"
 permalink: /about/
 layout: single
 ---
 
-## 테스트해보기
+![](https://devinlife.com/assets/images/bio-profile-photo2.jpg){: .align-center}
 
-아 존나 번거롭네
+ 부산대학교 통계학과 재학 중인 조근수 입니다. 개인 공부를 위한 블로그이며, R과 Python을 주로 업로드할 예정입니다.
+ 가능하다면 통계 이론도 다룰 예정입니다. 

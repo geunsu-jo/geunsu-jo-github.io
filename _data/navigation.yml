@@ -14,7 +14,7 @@
 # test code
 # main links
 main:
-  - title: "블로그 방문하기"
+  - title: "Home"
     url: https://geunsu-jo.github.io/
   - title: "About"
     url: /about/

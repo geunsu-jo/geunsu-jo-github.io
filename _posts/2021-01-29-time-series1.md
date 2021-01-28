@@ -38,7 +38,6 @@ use_math: true
 
    ![component-of-time-series1]({{"../assets/images/time_series/component_of_time_series.jpg"| relative_url}})
 
-<br>
 
 ## 모형관점에서의 시계열
 

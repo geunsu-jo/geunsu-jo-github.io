@@ -36,7 +36,9 @@ use_math: true
 
 4. **불규칙 요인(Irregular Factor)**은 측정 및 예측이 어려운 오차변동을 의미합니다. 즉 위의 세 가지 요인으로 **설명하고 남은 변동**을 의미한다고 보아도 무방합니다.
 
-   ![image-20210129000435402](C:\Users\LGPC\AppData\Roaming\Typora\typora-user-images\image-20210129000435402.png)
+  
+![2021-01-27-imgtest](..asset/images/time_series/component.png)
+
 
 <br>
 

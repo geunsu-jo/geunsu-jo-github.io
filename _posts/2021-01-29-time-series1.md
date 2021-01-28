@@ -1,3 +1,15 @@
+---
+layout: single
+title:  "[Time Series]시계열 분석의 기초 개념"
+excerpt: "시계열 분석에 필요한 기초적인 개념을 소개한다."
+tags: 
+  - time series
+  - 이론
+comments: true
+categories: time series
+use_math: true
+---
+
 시계열 자료의 기초적인 개념에 대해 알아보겠습니다.  R 실습에 필요한 기초적인 개념만 다룰 것이며, 추후 필요한 개념은 따로 정리하겠습니다.
 
 <br>

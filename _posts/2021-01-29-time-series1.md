@@ -1,3 +1,16 @@
+---
+layout: single
+title:  "[Time Series]시계열 분석의 기초 개념"
+excerpt: "시계열 분석에 필요한 기초적인 개념을 소개한다."
+tags: 
+  - time series
+  - 이론
+comments: true
+toc: true
+categories: 
+  - time series
+use_math: true
+---
 <br>
 
 시계열 자료의 기초적인 개념에 대해 알아보겠습니다.  R 실습에 필요한 기초적인 개념만 다룰 것이며, 추후 필요한 개념은 따로 정리하겠습니다.
@@ -22,7 +35,7 @@
 
 4. **불규칙 요인**(**I**rregular Factor)은 측정 및 예측이 어려운 오차변동을 의미합니다. 즉 위의 세 가지 요인으로 **설명하고 남은 변동**을 의미한다고 보아도 무방합니다.
 
-   ![component-of-time-series](C:\Users\LGPC\Documents\GitHub\geunsu-jo.github.io\images\time_series\component_of_time_series.jpg)
+   ![component-of-time-series](..\images\time_series\component_of_time_series.jpg)
 
 <br>
 

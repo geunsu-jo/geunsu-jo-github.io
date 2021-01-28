@@ -40,7 +40,7 @@
 
 ## 백색잡음과 확률보행
 
-단변량 시계열 ${z_{t};t=1,\cdot \cdot \cdot ,T}$을 어떤 확률과정(Stochastic Process)의 실현으로 볼 수 있습니다. 확률과정의 가장 단순한 예로 백색잡음과정(White Noise Process)와 확률보행과정(Random walk process)이 있습니다.
+단변량 시계열 {$z_{t};t=1,\cdot \cdot \cdot ,T$}을 어떤 확률과정(Stochastic Process)의 실현으로 볼 수 있습니다. 확률과정의 가장 단순한 예로 백색잡음과정(White Noise Process)와 확률보행과정(Random walk process)이 있습니다.
 
 1. **백색잡음과정** : $a_{1},a_{2},\cdot \cdot \cdot ,a_{t},\cdot \cdot \cdot$를 평균이 0이고 분산이 $\sigma^2$인 i.i.d.로부터 얻어지는 확률변수라고 할 때, 백색잡은과정은
 

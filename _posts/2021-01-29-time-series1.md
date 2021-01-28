@@ -56,17 +56,17 @@ use_math: true
 
 단변량 시계열 {$z_{t};t=1,\cdot \cdot \cdot ,T$}을 어떤 확률과정(Stochastic Process)의 실현으로 볼 수 있습니다. 확률과정의 가장 단순한 예로 백색잡음과정(White Noise Process)와 확률보행과정(Random walk process)이 있습니다.
 
-1. **백색잡음과정** : $a_{1},a_{2},\cdot \cdot \cdot ,a_{t},\cdot \cdot \cdot$를 평균이 0이고 분산이 $\sigma^2$인 i.i.d.로부터 얻어지는 확률변수라고 할 때, 백색잡은과정은
+1. **백색잡음과정(White Noise Process)** : $a_{1},a_{2},\cdot \cdot \cdot ,a_{t},\cdot \cdot \cdot$를 평균이 0이고 분산이 $\sigma^2$인 i.i.d.로부터 얻어지는 확률변수라고 할 때, 백색잡은과정은
 
    <center>$z_{t}=\mu+a_{t},\;\;\; t=1,\cdot \cdot \cdot T,\cdot\cdot\cdot$</center>
 
    로 정의됩니다. 여기서 $\mu$는 평균 수준을 나타내는 모수입니다. 두 시점 $t$와 $t^{`}$의 시차(time lag)를 $k$라고 정의할 때,  자기상관계수는 시점 $t$와 상관없이 $\rho_{k}=Corr(z_{t},z_{t-k})=0$입니다.
 
-2. **확률보행과정** :
+2. **확률보행과정(Random walk process)** :
 
    <center>$z_{0}=\mu,\;\;\; z_{t}=z_{t-1}+a_{t},\;\;\; t=1,\cdot \cdot \cdot,$</center>
 
-   로 정의됩니다. 자기상관계수는 $\rho_{t,k}=Corr(z_{t},z_{t-k})=\sqrt{\frac{t-k}{t}}$입니다. 증명은 모형을 축차적으로 대입하면 쉽게 알 수 있습니다.
+   로 정의됩니다. 자기상관계수는 $\rho_{t,k}=Corr(z_{t},z_{t-k})=\sqrt{\frac{t-k}{t}}$입니다. 모형을 축차적으로 대입하면 쉽게 증명할 수 있습니다.
 
 
 
@@ -84,6 +84,6 @@ use_math: true
 
 3. **두 시점 사이의 자기공분산은 시차에만 의존.**
 
-   즉, 모든 t와 s에 대해 $Cov(z_{t},z_{s})=\gamma(t-s)$
+   즉, 모든 t와 s에 대해 $Cov(z_{t},z_{s})=\gamma(|t-s|)$
 
 추세를 갖거나 변동이 증가 혹은 감소할 경우 조건 1,2를 만족하지 못하기 때문에 정상성에서 벗어납니다.  조건 3을 만족하지 않는 예로는 시계열이 일정한 형태의 반복이 없는 경우에 해당합니다. 

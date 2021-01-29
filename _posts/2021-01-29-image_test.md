@@ -1,6 +1,14 @@
----
-layout: single
-title: "rmarkdown_image_test"
+layout: single   
+title:  "이미지 출력되는지 확인해보자"   
+excerpt: "이미지 출력이 가능한지 테스트 중 입니다."   
+tags:    
+  - 123   
+  - ㅇㅇ   
+comments: true   
+toc: true   
+categories:    
+  - test   
+use_math: true   
 output:
   md_document:
     variant: markdown_github

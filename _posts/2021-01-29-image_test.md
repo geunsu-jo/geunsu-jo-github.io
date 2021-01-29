@@ -1,14 +1,14 @@
 ---
 layout: single   
-title:  "이미지 출력되는지 확인해보자"   
+title: "이미지 출력되는지 확인해보자"   
 excerpt: "이미지 출력이 가능한지 테스트 중 입니다."   
-tags:    
-  - 123   
-  - ㅇㅇ   
-comments: true   
-toc: true   
-categories:    
-  - test   
+tags:
+  - tag1
+  - tag2
+comments: true
+toc: true
+categories:
+  - test1   
 use_math: true   
 output:
   md_document:

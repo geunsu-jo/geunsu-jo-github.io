@@ -90,8 +90,6 @@ use_math: true
 
 ## 모형평가지표
 
-모형평가지표에는 어떤 것들이 있는지 살펴보겠습니다. 모형평가지표로써 사용되는 함수들은 비용함수(Cost function)이기 때문에 항상 작을수록 좋습니다. 우선 $z_{t}$를 시계열 자료의 관측값, $\hat{z}_{t}$을 예측값이라고 하겠습니다.
-
 - ME(Mean Erros) : 
 
 <center>$ME = \frac{1}{T}\sum_{t=1}^{T}(z_{t}-\hat{z}_{t})$</center>

@@ -7,7 +7,7 @@ tags:
   - 이론   
 comments: true   
 toc: true
-toc_sticky: false
+toc_sticky: true
 categories:    
   - time series
 use_math: true   

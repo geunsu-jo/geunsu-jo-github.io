@@ -117,4 +117,4 @@ use_math: true
 
 
 
-
+![](/assets/images/time_series/component_of_time_series.jpg)

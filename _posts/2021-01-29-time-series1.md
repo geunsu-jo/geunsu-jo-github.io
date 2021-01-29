@@ -106,7 +106,7 @@ use_math: true
 
 - MPE(Mean Percentage Errors) : 
 
-<center>$MPE = \frac{100}{T}\sum_{t=1}^{T}(\frac{{z_{t}-\hat{z}}_{t}}{z_{t}})$</center>
+<center>$MPE = \frac{100}{T}\sum_{t=1}^{T}(\frac{z_{t}-\hat{z}_{t}}{z_{t}})$</center>
 
 - MAPE(Mean Absolute Percentage Errors) : 
 

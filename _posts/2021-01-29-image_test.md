@@ -1,3 +1,4 @@
+---
 layout: single   
 title:  "이미지 출력되는지 확인해보자"   
 excerpt: "이미지 출력이 가능한지 테스트 중 입니다."   

@@ -7,6 +7,7 @@ tags:
   - R
 comments: true
 toc: true
+toc_sticky: true
 categories:
   - time series   
 use_math: true   

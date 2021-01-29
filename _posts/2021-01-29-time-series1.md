@@ -1,14 +1,14 @@
 ---   
 layout: single   
-title:  "[Time Series]시계열 분석의 기초 개념"   
+title:  "[Time Series Analysis]시계열 분석의 기초 개념"   
 excerpt: "시계열 분석에 필요한 기초적인 개념을 소개합니다."   
 tags:    
-  - time series   
+  - time series analysis   
   - 이론   
 comments: true   
 toc: true   
 categories:    
-  - time series   
+  - time series analysis   
 use_math: true   
 ---   
 

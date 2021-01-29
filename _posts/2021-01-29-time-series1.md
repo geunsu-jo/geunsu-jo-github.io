@@ -6,7 +6,8 @@ tags:
   - time series
   - 이론   
 comments: true   
-toc: true   
+toc: true
+toc_sticky: false
 categories:    
   - time series
 use_math: true   

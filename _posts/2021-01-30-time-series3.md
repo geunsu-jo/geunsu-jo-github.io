@@ -1,7 +1,7 @@
 ---
 layout: single   
 title: "[시계열 분석]R에서 이동평균법과 지수평활법"   
-excerpt: "이동평균법과 지수평활법을 소개하고 R을 활용하여 실습을 진행합니다."   
+excerpt: "이동평균법과 지수평활법을 소개하고 R을 활용하여 실습합니다."   
 tags:
   - time series
   - R
@@ -127,7 +127,7 @@ p-value=0.3229로 유의수준 0.05보다 큰 값을 가지므로, "잔차가 �
 
 ### 이중이동평균법
 
-단순이동평균 $M_{t}^{(1)} \cdot \cdot \cdot M_{t-N+1}^{(1)}$를 다시 이동평균하게 되면 $M_t^{(2)}$로 나타내고 이중이동평균(Double Moving Average)라고 합니다. `filter()`를 두번 적용하면 이중이동평균을 쉽게 구할 수 있습니다.
+단순이동평균 $M_{t}^{(1)} \cdot \cdot \cdot M_{t-N+1}^{(1)}$를 다시 이동평균하게 되면 $M_t^{(2)}$로 나타내고 **이중이동평균(Double Moving Average)**라고 합니다. `filter()`를 두번 적용하면 이중이동평균을 쉽게 구할 수 있습니다.
 
 ``` r
 m4_1 <- filter(ts_data, filter=rep(1/3,3), sides=1)
@@ -169,18 +169,9 @@ p-value=0.3으로 아주 큰 값을 가지므로, "잔차는 자기상관성이 
 ``` r
 mm3_1 <- ma(ts_data, order=3, centre=T) #MA(3) with a center
 mm3_2 <- ma(mm3_1, order=3, centre=T) #double MA(3) with a center
-
-res3 <- mm3_2 - ts_data
-Box.test(res3)
 ```
 
-    ## 
-    ##  Box-Pierce test
-    ## 
-    ## data:  res3
-    ## X-squared = 1.3138, df = 1, p-value = 0.2517
-
-T시점에서의 이동평균$M_{T}$은 T+1시점의 예측값$\hat{Y}_{T+1}$이 됩니다.  `forecast`패키지의 `forecast`함수를 이용하면 시계열자료를 예측할 수 있습니다. 옵션 `h=2`로 설정하여 이후 2개의 시점 T+1, T+2를 예측합니다.
+ $T$시점에서의 이동평균$M_{T}$은 $T+1$시점의 예측값 $\hat{Y}_{T+1}$이 됩니다.  `forecast`패키지의 `forecast`함수를 이용하면 시계열자료를 예측할 수 있습니다. 옵션 `h=2`로 설정하여 이후 2개의 시점 $T+1$, $T+2$를 예측합니다.
 
 ``` r
 f_simple <- forecast(mm3_1, h=2)
@@ -223,53 +214,22 @@ accuracy(f_double)
 
 ### 단순지수평활법과 이중지수평활법
 
-**단순지수평활법**은 다음과 같이 수식으로 나타낼 수 있습니다.
+1. **단순지수평활법**
 
-<center>$\begin{align*}
-F_{T+1}^{(1)} & = \alpha Y_{T}+(1-\alpha)F_{T}^{(1)} \\
- & = \alpha Y_{T} + \alpha(1-\alpha)Y_{T-1} + \cdot\cdot\cdot + (1-\alpha)^{T}F_{1}^{(1)}
-\end{align*}$</center>
+   $\begin{align*}
+   F_{T+1}^{(1)} & = \alpha Y_{T}+(1-\alpha)F_{T}^{(1)} \\
+    & = \alpha Y_{T} + \alpha(1-\alpha)Y_{T-1} + \cdot\cdot\cdot + (1-\alpha)^{T}F_{1}^{(1)}
+   \end{align*}$
 
-**이중지수평활법**은 다음과 같이 수식으로 나타낼 수 있습니다.
+2. **이중지수평활법**
 
-<center>$F_{T+1}^{(2)} = \alpha F_{T}^{(1)}+(1-\alpha)F_{T}^{(2)}$</center>
+   $F_{T+1}^{(2)} = \alpha F_{T}^{(1)}+(1-\alpha)F_{T}^{(2)}$
 
-``` r
-ho <- HoltWinters(ts_data, alpha=0.1, beta=F, gamma=F)
-ho
-```
+여기서 $\alpha$값은 0과 1사이의 값을 가지는 Hyperparameter로 적절한 값을 찾는 것 또한 중요합니다.  초기추정값 $F_{1}^(1)$ 또한 임의로 설정할 수 있지만, 가중치 $(1-\alpha)^T$가 기하급수적으로 감소하기 때문에, 어떤 값을 사용하더라도 모형에 큰 변화는 없습니다.
 
-    ## Holt-Winters exponential smoothing without trend and without seasonal component.
-    ## 
-    ## Call:
-    ## HoltWinters(x = ts_data, alpha = 0.1, beta = F, gamma = F)
-    ## 
-    ## Smoothing parameters:
-    ##  alpha: 0.1
-    ##  beta : FALSE
-    ##  gamma: FALSE
-    ## 
-    ## Coefficients:
-    ##       [,1]
-    ## a 1334.816
+### R에서 HoltWinters()
 
-``` r
-head(ho$fitted, 10) #fitting value
-```
-
-    ##             xhat    level
-    ## 2006 Q2 1342.000 1342.000
-    ## 2006 Q3 1352.000 1352.000
-    ## 2006 Q4 1342.000 1342.000
-    ## 2007 Q1 1342.100 1342.100
-    ## 2007 Q2 1350.390 1350.390
-    ## 2007 Q3 1351.551 1351.551
-    ## 2007 Q4 1361.996 1361.996
-    ## 2008 Q1 1352.996 1352.996
-    ## 2008 Q2 1341.997 1341.997
-    ## 2008 Q3 1343.697 1343.697
-
-alpha지정x
+`HoltWinters`함수를 사용하면, 알아서 최적의 $\alpha$값을 찾아줍니다. 단순지수평활법을 사용하고 싶다면 `beta=F, gamma=F`를, 이중지수평활법을 사용하고 싶다면 `gamma=F` 옵션을 사용하면 됩니다. 여기서는 단순지수평활법을 사용합니다.
 
 ``` r
 ha <- HoltWinters(ts_data, beta=F, gamma=F) #exponential smoothing
@@ -289,6 +249,8 @@ ha
     ## Coefficients:
     ##       [,1]
     ## a 1341.998
+
+적합된 모형의 추정치를 출력합니다.
 
 ``` r
 head(ha$fitted, 10)
@@ -312,6 +274,8 @@ plot(ha)
 
 ![](/assets/images/time_series/smoothing/es-1.png)
 
+추정치가 대부분 1342 근방의 값을 가져, 모형이 수평한 직선을 가지는 것처럼 보입니다. 마지막으로 `forecast()`함수를 사용해 이후 4개의 시점을 예측해봅니다.
+
 ``` r
 f_exp <- forecast(ha, h=4)
 f_exp
@@ -324,15 +288,12 @@ f_exp
     ## 2011 Q4       1341.998 1220.576 1463.421 1156.299 1527.698
 
 ``` r
-f_exp$fitted
+plot(f_exp)
 ```
 
-    ##          Qtr1     Qtr2     Qtr3     Qtr4
-    ## 2006       NA 1342.000 1342.007 1342.001
-    ## 2007 1342.001 1342.006 1342.008 1342.015
-    ## 2008 1342.010 1342.004 1342.005 1342.010
-    ## 2009 1342.004 1341.994 1342.003 1342.002
-    ## 2010 1342.006 1342.001 1341.997 1342.007
+![](/assets/images/time_series/smoothing/es_pred-1.png)
+
+마지막으로 모형의 잔차가 정상성을 가지는지 확인해봅니다. 
 
 ``` r
 f_exp$residuals
@@ -361,8 +322,3 @@ Box.test(f_exp$residual, type="Box-Pierce")
     ## data:  f_exp$residual
     ## X-squared = 2.0761, df = 1, p-value = 0.1496
 
-``` r
-plot(f_exp)
-```
-
-![](/assets/images/time_series/smoothing/es_pred-1.png)

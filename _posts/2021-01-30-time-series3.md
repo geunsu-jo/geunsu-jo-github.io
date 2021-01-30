@@ -123,7 +123,7 @@ Box.test(res, type="Box-Pierce") # H0: Residuals are independent.
     ## data:  res
     ## X-squared = 0.97729, df = 1, p-value = 0.3229
 
-p-value=0.3229로 유의수준 0.05보다 큰 값을 가지므로, "잔차가 독립이다."("잔차는 자기상관이 없다.")는 귀무가설을 기가하지 못합니다.
+p-value=0.3229로 유의수준 0.05보다 큰 값을 가지므로, "잔차가 독립이다."("잔차는 자기상관이 없다.")라는 귀무가설을 기각하지 못합니다.
 
 ### 이중이동평균법
 
@@ -217,9 +217,9 @@ accuracy(f_double)
 1. **단순지수평활법**
 
    $\begin{align*}
-F_{T+1}^{(1)} & = \alpha Y_{T}+(1-\alpha)F_{T}^{(1)} \\
- & = \alpha Y_{T} + \alpha(1-\alpha)Y_{T-1} + \cdot\cdot\cdot + (1-\alpha)^{T}F_{1}^{(1)}
-\end{align*}$
+   F_{T+1}^{(1)} & = \alpha Y_{T}+(1-\alpha)F_{T}^{(1)} \\
+    & = \alpha Y_{T} + \alpha(1-\alpha)Y_{T-1} + \cdot\cdot\cdot + (1-\alpha)^{T}F_{1}^{(1)}
+   \end{align*}$
 
 2. **이중지수평활법**
 

@@ -5,6 +5,8 @@ excerpt: "이동평균법과 지수평활법을 소개하고 R을 활용하여 �
 tags:
   - time series
   - R
+  - Moving average
+  - Exponential smoothing
 comments: true
 toc: true
 toc_sticky: true

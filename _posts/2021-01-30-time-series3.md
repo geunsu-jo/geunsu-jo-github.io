@@ -208,7 +208,7 @@ accuracy(f_double)
 지수평활법(Exponential Smoothing Method)
 ----
 
- 이동평균법과 비교해서 지수평활법의 가장 큰 차이는 다음 두 가지라고 볼 수 있습니다. 하나는 **최근값에 더 큰 가중치를 주는것**이고, 다른 하나는 **이전 시점의 자료를 모두 사용한다**는 것입니다. 
+ 이동평균법과 비교해서 지수평활법의 가장 큰 차이는 다음 두 가지라고 볼 수 있습니다. 하나는 **최근값에 더 큰 가중치**를 주는 것이고, 다른 하나는 **이전 시점의 자료를 모두 사용한다**는 것입니다. 
 
 
 
@@ -217,9 +217,9 @@ accuracy(f_double)
 1. **단순지수평활법**
 
    $\begin{align*}
-   F_{T+1}^{(1)} & = \alpha Y_{T}+(1-\alpha)F_{T}^{(1)} \\
-    & = \alpha Y_{T} + \alpha(1-\alpha)Y_{T-1} + \cdot\cdot\cdot + (1-\alpha)^{T}F_{1}^{(1)}
-   \end{align*}$
+F_{T+1}^{(1)} & = \alpha Y_{T}+(1-\alpha)F_{T}^{(1)} \\
+ & = \alpha Y_{T} + \alpha(1-\alpha)Y_{T-1} + \cdot\cdot\cdot + (1-\alpha)^{T}F_{1}^{(1)}
+\end{align*}$
 
 2. **이중지수평활법**
 

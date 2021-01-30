@@ -148,11 +148,11 @@ acf(WN.ts, main="ACF")
 pacf(WN.ts, main="PACF")
 ```
 
-![](/assets/images/time_series/wn_acf_pacf-1.png) - ACF의 x축은
-시차(lag), y축은 autocorrelation - PACF의 x축은 시차(lag), y축은 partial
-autocorrelation - 시차가 0일 때, autocorrelation은 항상 1의 값을
-가집니다. - 대부분 값들이 파란선 내부에 위치한 것으로 보아 정상성을
-가짐을 유추할 수 있습니다.
+![](/assets/images/time_series/wn_acf_pacf-1.png) 
+* ACF의 x축은 시차(lag), y축은 autocorrelation
+* PACF의 x축은 시차(lag), y축은 partial autocorrelation 
+* 시차가 0일 때, autocorrelation은 항상 1의 값을 가집니다. 
+* 대부분 값들이 파란선 내부에 위치한 것으로 보아 정상성을 가짐을 유추할 수 있습니다.
 
 2.1 Random Walk random walk로부터 표본을 생성 후, time plot을 그립니다.
 
@@ -177,8 +177,8 @@ acf(RW.ts, main="ACF")
 pacf(RW.ts, main="PACF")
 ```
 
-![](/assets/images/time_series/rw_acf_pacf-1.png) - ACF의 값들이
-파란선에서 크게 벗어납니다. 따라서 비정상 시계열임을 유추할 수 있습니다.
+![](/assets/images/time_series/rw_acf_pacf-1.png) 
+* ACF의 값들이 파란선에서 크게 벗어납니다. 따라서 비정상 시계열임을 유추할 수 있습니다.
 
 > 정상성 검정하기에 앞서 단지 시각적으로 확인했을 뿐입니다. 정상성 혹은
 > 비정상성이라고 결론을 내리기엔 아직 섣부릅니다.
@@ -209,8 +209,8 @@ tseries::kpss.test(WN.ts, null = "Level")
     ## data:  WN.ts
     ## KPSS Level = 0.11076, Truncation lag parameter = 4, p-value = 0.1
 
--   p-value는 아주 큰 값을 가집니다.
--   따라서 “정상성을 만족한다”는 귀무가설을 기각하지 못합니다.
+*   p-value는 아주 큰 값을 가집니다.
+*   따라서 “정상성을 만족한다”는 귀무가설을 기각하지 못합니다.
 
 1.  Random Walk일 때, 정상성 검정
 
@@ -227,5 +227,5 @@ tseries::kpss.test(RW.ts, null = "Level")
     ## data:  RW.ts
     ## KPSS Level = 1.7658, Truncation lag parameter = 4, p-value = 0.01
 
--   p-value는 아주 작은 값을 가집니다.
--   따라서 “정상성을 만족한다”는 귀무가설을 기각합니다.
+*   p-value는 아주 작은 값을 가집니다.
+*   따라서 “정상성을 만족한다”는 귀무가설을 기각합니다.

@@ -15,6 +15,7 @@ output:
   md_document:
     variant: markdown_github
     preserve_yaml: true
+
 ---
 
 
@@ -25,7 +26,7 @@ R에서 어떻게 이동평균법(Moving Average Method)와 지수평활법(Expo
 
 
 
-## 이동평균법
+## 이동평균법(Moving Average Method)
 
 평균을 이용하면 불필요한 변동을 줄일 수 있습니다. $Var(X)=\sigma^2$인데 반해, $Var(\bar{X})=\frac{\sigma^2}{n}$임을 생각하면, 평균이 왜 불필요한 변동을 줄일 수 있는지 직관적으로 이해할 수 있습니다.  그렇다면 시계열자료 전체를 평균내어 분석을 진행할까요? 안타깝지만 자료 전체를 평균을 내면 시계열자료의 추세를 반영하지 못합니다. 
 
@@ -43,17 +44,21 @@ abline(h=mean(AirPassengers), col="blue")
 
 <center>$M_t^{(1)}= \frac{1}{N}(Y_{t}+ Y_{t-1} + \cdot \cdot \cdot +Y_{t-N+1})$</center> 
 
-N개 자료의 평균을 구했기 때문에 **N항 이동평균**이라고 불립니다. R에서 N항 이동평균은 어떻게 구하는지 알아보겠습니다.
+N개 자료의 평균을 구했기 때문에 **N항 이동평균**이라고 불립니다. 
+
+> 위의 과정은 t시점을 기준으로 이전 N개의 자료에 대한 평균을 구한 것입니다. t시점을 기준으로 이전 N/2개와 이후 N/2개 자료에 대한 평균을 구하는 방법도 있습니다. N항 중심이동평균이라고 불리며, `sides=2`로 바꿔주면 됩니다.
+
+R에서 N항 이동평균은 어떻게 구하는지 알아보겠습니다.
 
 ``` r
-m3 <- filter(AirPassengers, filter=rep(1/3, 3), sides=1)
-m6 <- filter(AirPassengers, filter=rep(1/6, 6), sides=1)
-m12 <- filter(AirPassengers, filter=rep(1/12, 12), sides=1)
+m3 <- filter(AirPassengers, filter=rep(1/3, 3), sides=1) # 3항 이동평균
+m6 <- filter(AirPassengers, filter=rep(1/6, 6), sides=1) # 6항 이동평균
+m12 <- filter(AirPassengers, filter=rep(1/12, 12), sides=1) # 12항 이동평균
 ```
 
-R의 기본패키지 `stats`에 있는`filter()`함수를 사용하면 N항 이동 평균을 구할 수 있습니다. 또한 `filter=c()`옵션을 사용하면 가중치를 다르게 줄 수 있습니다. 여기서는 N개자료에 같은 가중치를 주었습니다.
+R의 기본패키지 `stats`에 있는`filter()`함수를 사용하면 N항 이동 평균을 구할 수 있습니다. 또한 `filter=c()`옵션을 사용하면 가중치를 다르게 줄 수 있습니다. 여기서는 N개자료에 동일한 가중치를 주었습니다.
 
-> 위의 과정은 t시점을 기준으로 이전 N개의 자료에 대한 평균을 구한 것입니다. t시점을 기준으로 이전 N/2와 이후 N/2 자료에 대한 평균을 구하는 방법도 있습니다. sides=2로 바꿔주면 됩니다.
+> `dplyr`  패키지에서도 `filter()`함수를 제공합니다. 함수명은 같지만 다른 역할을 하므로 중첩을 막기위해 `패키지명::filter()` 으로 사용할 수도 있습니다.
 
 ``` r
 par(mfrow=c(2,2))
@@ -69,7 +74,7 @@ plot(m12, main="12-point moving average")
 
 ### 단순이동평균법
 
-앞서 나타낸 수식 $M_t^{(1)}$은 단순이동평균(Simple Moving Average)입니다. 여기서 (1)은 이동평균을 한번 진행하였다는 의미입니다. 만약 한 번 이동평균한 자료 $M_{t}^{(1)} \cdot \cdot \cdot M_{t-N+1}^{(1)}$를 다시 이동평균하게 되면 $M_t^{(2)}$로 나타내고 이중이동평균(Double Moving Average)라고 부릅니다. 우선 단순이동평균을 사용해서 시계열자료를 Smoothing해보겠습니다.
+앞서 나타낸 수식 $M_t^{(1)}$은 단순이동평균(Simple Moving Average)입니다. 여기서 (1)은 이동평균을 한번 진행하였다는 의미입니다. 만약 이동평균한 자료 $M_{t}^{(1)} \cdot \cdot \cdot M_{t-N+1}^{(1)}$를 다시 이동평균하게 되면 $M_t^{(2)}$로 나타내고 이중이동평균(Double Moving Average)라고 부릅니다. 우선 단순이동평균을 사용해서 시계열자료를 Smoothing해보겠습니다.
 
 ``` r
 raw_data <- matrix(c(1342, 1442, 1252, 1343, 1425, 1362, 1456, 1272, 1243,
@@ -96,7 +101,7 @@ abline(h=mean(raw_data), col="blue")
 
 ![](/assets/images/time_series/smoothing/sma-1.png)
 
- 원 시계열 자료에 단순이동평균을 적용한 것이 빨간 선에 해당됩니다. 4항에 대해 평균을 내었기 때문에 4번째 항부터 빨간 점선이 시작됩니다. 원 시계열자료보다 변동이 많이 줄은 것을 확인할 수 있으며, 추세는 딱히 보이지 않습니다. 다음으로 모형의 잔차(원시계열-단순이동평균시계열)가 정상성을 만족하는지 확인해봅니다. `tsdisplay()`함수는 잔차의 정상성 확인을 위한 그림을 제공합니다.
+ 원 시계열 자료에 단순이동평균을 적용한 것이 빨간 선에 해당됩니다. 4항에 대해 평균을 내었기 때문에 4번째 항부터 빨간 점선이 시작됩니다. 원 시계열자료보다 변동이 많이 줄은 것을 확인할 수 있으며, 추세는 딱히 보이지 않습니다. 다음으로 모형의 잔차(단순이동평균시계열 - 원시계열)가 정상성을 만족하는지 확인해봅니다. `tsdisplay()`함수는 잔차의 정상성 확인을 위한 그림을 제공합니다.
 
 ``` r
  #remove first three values which are not able to be predicted.
@@ -106,7 +111,7 @@ tsdisplay(res, main="Residuals by MA(4) for raw_data")
 
 ![](/assets/images/time_series/smoothing/sma_acf-1.png)
 
-time plot이 백색잡음형태를 띄고 ACF와 PACF가 파란선에서 벗어나지 않는 것으로 보아 정상성을 가짐을 알 수 있습니다. 마지막으로 `Box.test()`를 통해 잔차의 자기상관성이 있는지 검정합니다.
+time plot이 백색잡음형태를 띄고 ACF와 PACF가 파란선을 벗어나지 않는 것으로 보아 정상성을 가짐을 알 수 있습니다. 마지막으로 `Box.test()`를 통해 잔차가 자기상관성을 가지는지 검정합니다.
 
 ``` r
 Box.test(res, type="Box-Pierce") # H0: Residuals are independent.
@@ -159,8 +164,9 @@ p-value=0.3으로 아주 큰 값을 가지므로, "잔차는 자기상관성이 
 
 ### 이동평균법을 활용한 시계열 예측
 
+`filter()`와 마찬가지로 `forecast`패키지의 `ma()`를 사용해서도 이동평균을 구할 수 있습니다. `order=3`은 3항 이동평균을, `centre=T`는 중심이동평균을 뜻합니다.
+
 ``` r
-mm4_1 <- ma(ts_data, order=4, centre=F) #MA(4) without a center
 mm3_1 <- ma(ts_data, order=3, centre=T) #MA(3) with a center
 mm3_2 <- ma(mm3_1, order=3, centre=T) #double MA(3) with a center
 
@@ -174,6 +180,8 @@ Box.test(res3)
     ## data:  res3
     ## X-squared = 1.3138, df = 1, p-value = 0.2517
 
+T시점에서의 이동평균$M_{T}$은 T+1시점의 예측값$\hat{Y}_{T+1}$이 됩니다.  `forecast`패키지의 `forecast`함수를 이용하면 시계열자료를 예측할 수 있습니다. 옵션 `h=2`로 설정하여 이후 2개의 시점 T+1, T+2를 예측합니다.
+
 ``` r
 f_simple <- forecast(mm3_1, h=2)
 f_double <- forecast(mm3_2, h=2)
@@ -185,6 +193,8 @@ plot(f_double, main="forecast Double MA(3)") # forecast
 
 ![](/assets/images/time_series/smoothing/pred_ma-1.png)
 
+파란 밴드는 80%신뢰구간을, 회색밴드는 95%신뢰구간을 나타냅니다. 
+
 ``` r
 f_double
 ```
@@ -192,6 +202,8 @@ f_double
     ##         Point Forecast    Lo 80    Hi 80    Lo 95    Hi 95
     ## 2010 Q3       1331.444 1308.163 1354.725 1295.839 1367.049
     ## 2010 Q4       1331.444 1298.520 1364.368 1281.091 1381.797
+
+`accuracy()`함수는 모형을 평가하는 여러 지표를 제공합니다.
 
 ``` r
 accuracy(f_double)
@@ -202,11 +214,25 @@ accuracy(f_double)
     ##                   ACF1
     ## Training set 0.3147654
 
-지수
+지수평활법(Exponential Smoothing Method)
 ----
 
-exponential smoothing \# (beta=F, gamma=F): no trend and no seasonal
-effect alpha 지정
+ 이동평균법과 비교해서 지수평활법의 가장 큰 차이는 다음 두 가지라고 볼 수 있습니다. 하나는 **최근값에 더 큰 가중치를 주는것**이고, 다른 하나는 **이전 시점의 자료를 모두 사용한다**는 것입니다. 
+
+
+
+### 단순지수평활법과 이중지수평활법
+
+**단순지수평활법**은 다음과 같이 수식으로 나타낼 수 있습니다.
+
+<center>$\begin{align*}
+F_{T+1}^{(1)} & = \alpha Y_{T}+(1-\alpha)F_{T}^{(1)} \\
+ & = \alpha Y_{T} + \alpha(1-\alpha)Y_{T-1} + \cdot\cdot\cdot + (1-\alpha)^{T}F_{1}^{(1)}
+\end{align*}$</center>
+
+**이중지수평활법**은 다음과 같이 수식으로 나타낼 수 있습니다.
+
+<center>$F_{T+1}^{(2)} = \alpha F_{T}^{(1)}+(1-\alpha)F_{T}^{(2)}$</center>
 
 ``` r
 ho <- HoltWinters(ts_data, alpha=0.1, beta=F, gamma=F)

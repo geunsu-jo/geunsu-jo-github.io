@@ -5,6 +5,8 @@ excerpt: "R에서 ACF, PCFA, KPSS test를 활용하여 정상성을 확인합니
 tags:
   - time series
   - R
+  - ACF
+  - PACF
 comments: true
 toc: true
 toc_sticky: true

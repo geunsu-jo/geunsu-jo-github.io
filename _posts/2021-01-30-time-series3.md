@@ -216,11 +216,7 @@ accuracy(f_double)
 
 1. **단순지수평활법**
 
-   $\begin{align*}
-   F_{T+1}^{(1)} & = \alpha Y_{T}+(1-\alpha)F_{T}^{(1)} \\
-    & = \alpha Y_{T} + \alpha(1-\alpha)Y_{T-1} + \cdot\cdot\cdot + (1-\alpha)^{T}F_{1}^{(1)}
-   \end{align*}$
-
+   $\begin{align*} F_{T+1}^{(1)} & = \alpha Y_{T}+(1-\alpha)F_{T}^{(1)} \\ & = \alpha Y_{T} + \alpha(1-\alpha)Y_{T-1} + \cdot\cdot\cdot + (1-\alpha)^{T}F_{1}^{(1)} \end{align*}$
 2. **이중지수평활법**
 
    $F_{T+1}^{(2)} = \alpha F_{T}^{(1)}+(1-\alpha)F_{T}^{(2)}$

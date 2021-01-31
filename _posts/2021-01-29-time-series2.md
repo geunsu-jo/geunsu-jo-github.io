@@ -1,6 +1,6 @@
 ---
 layout: single   
-title: "[시계열 분석]R에서 ACF와 PACF를 활용한 정상성 확인"   
+title: "[시계열 분석]R에서 ACF와 PACF를 활용한 정상성(Stationary) 확인"   
 excerpt: "R에서 ACF, PCFA, KPSS test를 활용하여 정상성을 확인합니다."   
 tags:
   - time series

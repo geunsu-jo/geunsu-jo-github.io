@@ -1,7 +1,7 @@
 ---
 layout: single   
 title: "[시계열 분석]R에서 요소분해법(Decomposition with ggplot2)"   
-excerpt: "R에서 ggplot2를 사용한 시계열자료 시각화와 요소분해법을 다룹니다."   
+excerpt: "R에서 ggplot2를 사용여 시계열자료를 시각화하고 요소분해법을 진행합니다."   
 tags:
   - time series
   - R

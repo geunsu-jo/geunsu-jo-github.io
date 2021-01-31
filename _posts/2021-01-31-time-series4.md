@@ -1,7 +1,7 @@
 ---
 layout: single   
-title: "[시계열 분석]R에서 tidyverse를 활용한 요소분해법(Decomposition)"   
-excerpt: "이동평균법과 지수평활법을 소개하고 R을 활용하여 실습을 진행합니다."   
+title: "[시계열 분석]R에서 요소분해법(Decomposition with ggplot2)"   
+excerpt: "R에서 ggplot2를 사용한 시계열자료 시각화와 요소분해법을 다룹니다."   
 tags:
   - time series
   - R
@@ -35,7 +35,7 @@ library(gridExtra)
 autoplot(AirPassengers)
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-2-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-2-1.png)
 
 ``` r
 AirPassengers %>%
@@ -43,13 +43,13 @@ stl(t.window=13, s.window="periodic", robust=TRUE) %>%
 autoplot()
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-3-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-3-1.png)
 
 ``` r
 autoplot(stl(AirPassengers, t.window=13, s.window="periodic", robust=TRUE))
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-4-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-4-1.png)
 
 \#\#\#d
 
@@ -65,13 +65,13 @@ par(mfrow=c(1,2))
 plot(decompose(dd2.ts, type="additive"))
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-5-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-5-1.png)
 
 ``` r
 plot(decompose(dd4.ts, type="additive")) # additive model
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-5-2.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-5-2.png)
 
 가법
 
@@ -109,7 +109,7 @@ plot(dd_noseasonal, main="TS without seasonal effects")
 plot(dd_notrend, main="TS without trend effects")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-8-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-8-1.png)
 
 승법
 
@@ -148,7 +148,7 @@ plot(ddM_noseasonal, main="TS without seasonal effects")
 plot(ddM_notrend, main="TS without trend effects")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-11-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-11-1.png)
 
 실제 데이터
 
@@ -158,26 +158,26 @@ par(mfrow=c(1,2))
 plot(decompose(AirPassengers, type="additive"))
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-12-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-12-1.png)
 
 ``` r
 plot(decompose(AirPassengers, type="multiplicative"))
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-12-2.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-12-2.png)
 
 ``` r
 ddd<-decompose(AirPassengers, type="multiplicative")
 plot(AirPassengers/ddd$seasonal, main="Remove seasonal variation")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-13-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-13-1.png)
 
 ``` r
 plot(AirPassengers/ddd$trend, main="Remove trend variation")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-13-2.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-13-2.png)
 
 ``` r
 AirPassengers %>% decompose(type="additive") %>%
@@ -185,7 +185,7 @@ autoplot() +
 ggtitle("Classical additive decomposition of airPassengers data")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-14-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-14-1.png)
 
 ``` r
 AirPassengers %>% decompose(type="multiplicative") %>%
@@ -193,7 +193,7 @@ autoplot() +
 ggtitle("Classical multiplicative decomposition of airPassengers data")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-15-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-15-1.png)
 
 ``` r
 dda=decompose(AirPassengers, type="additive")
@@ -227,13 +227,13 @@ tseries::kpss.test(ddm$random, null = "Level") #Stationary for random variation 
 tsdisplay(dda$random, main="Random/ Additive model")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-18-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-18-1.png)
 
 ``` r
 tsdisplay(ddm$random, main="Random/ Multiplicative model")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-19-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-19-1.png)
 
 seats
 
@@ -242,7 +242,7 @@ data(elecequip)
 autoplot(elecequip)
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-20-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-20-1.png)
 
 ``` r
 elecequip %>% seas() %>%
@@ -250,7 +250,7 @@ autoplot() +
 ggtitle("SEATS decomposition of electrical equipment index")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-21-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-21-1.png)
 
 ``` r
 elecequip %>% seas()->seats_elece
@@ -262,7 +262,7 @@ X11
 autoplot(elecequip)
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-23-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-23-1.png)
 
 ``` r
 # seasonal effect fitting
@@ -272,7 +272,7 @@ autoplot(fit) +
 ggtitle("X11 decomposition of electrical equipment index")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-24-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-24-1.png)
 
 ``` r
 #the trend-cycle component and the seasonally adjusted data, along with the original data.
@@ -285,14 +285,14 @@ scale_colour_manual(values=c("gray","blue","red"),
 breaks=c("Data","Seasonally Adjusted","Trend"))
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-25-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-25-1.png)
 
 ``` r
 #Seasonal sub-series plot of the seasonal component from the X11 decomposition of the new orders index for electrical equipment.
 fit %>% seasonal() %>% ggsubseriesplot() + ylab("Seasonal")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-26-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-26-1.png)
 
 ``` r
 #fit %>% seasonal()
@@ -327,7 +327,7 @@ air_stl %>% str()
 plot(air_stl)
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-29-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-29-1.png)
 
 ``` r
 air_ss=seasadj(air_stl) #Returns seasonally adjusted data constructed by removing the seasonal component.
@@ -346,7 +346,7 @@ seasonal_index
 autoplot(air_stl) # decomposition plot
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-31-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-31-1.png)
 
 ``` r
 forecast_air<-forecast::forecast(air_stl)
@@ -383,7 +383,7 @@ forecast_air
 autoplot(forecast_air)
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-33-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-33-1.png)
 
 ``` r
 data(a10)
@@ -405,7 +405,7 @@ grid.arrange(
 )
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-35-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-35-1.png)
 
 ``` r
 # PACF
@@ -414,7 +414,7 @@ grid.arrange(
 )
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-36-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-36-1.png)
 
 ``` r
 #Monthly sales of antidiabetic drugs in Australia.
@@ -424,7 +424,7 @@ ylab("$ million") +
 xlab("Year")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-37-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-37-1.png)
 
 ``` r
 #Seasonal plot of monthly antidiabetic drug sales in Australia.
@@ -433,7 +433,7 @@ ylab("$ million") +
 ggtitle("Seasonal plot: antidiabetic drug sales")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-38-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-38-1.png)
 
 ``` r
 #Polar seasonal plot of monthly antidiabetic drug sales in Australia.
@@ -442,7 +442,7 @@ ylab("$ million") +
 ggtitle("Polar seasonal plot: antidiabetic drug sales")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-39-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-39-1.png)
 
 ``` r
 #Seasonal subseries plot of monthly antidiabetic drug sales in Australia.
@@ -451,7 +451,7 @@ ylab("$ million") +
 ggtitle("Seasonal subseries plot: antidiabetic drug sales")
 ```
 
-![](../assets/images/time_series/decomposition/unnamed-chunk-40-1.png)
+![](/assets/images/time_series/decomposition/unnamed-chunk-40-1.png)
 
 
 

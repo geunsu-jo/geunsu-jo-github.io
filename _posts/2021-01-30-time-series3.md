@@ -1,6 +1,6 @@
 ---
 layout: single   
-title: "[시계열 분석]R에서 이동평균법과 지수평활법"   
+title: "[시계열 분석]R에서 이동평균법(Moving Average Method)과 지수평활법(Exponential Smoothing)"   
 excerpt: "이동평균법과 지수평활법을 소개하고 R을 활용하여 실습합니다."   
 tags:
   - time series

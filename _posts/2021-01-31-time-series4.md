@@ -428,4 +428,3 @@ grid.arrange(
 )
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-29-1.png)

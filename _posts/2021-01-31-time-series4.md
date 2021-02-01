@@ -427,4 +427,5 @@ grid.arrange(
   nrow=2, ncol=2
 )
 ```
+![](/assets/images/time_series/decomposition/unnamed-chunk-29-1.png)
 

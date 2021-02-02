@@ -71,9 +71,9 @@ $S_{t}+I_{t}$의 추정치 $y_{t}-\hat{TC_{t}}$를 계산합니다.
 
 ***STEP3***
 
-$ y_t-\hat{TC}_t $계열에 대해 계절별로 평균치 $ \bar{S}_t $를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t $를 구합니다. 즉, $\hat{S}_t=\bar{S}_t-\sum_{t=1}^{d}\bar{S}_t/d$를 계산합니다.
+$y_t-\hat{TC_{t}}$ 계열에 대해 계절별로 평균치 $\bar{S_{t}} $를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S_t}$를 구합니다. 즉, $\hat{S_t} = \bar{S_{t}}-\sum_{t=1}^{d} \bar{S_{t}}/d$를 계산합니다.
 
-***STEP3***
+***STEP4***
 
 Remainder component인 $ \hat{R}_t=y_t-\hat{TC}_t-\hat{S}_t $를 계산합니다.
 
@@ -164,9 +164,9 @@ grid.arrange(
 
 ***STEP3***
 
- $y_t / \hat{TC_t}$계열에 대해 계절별로 평균치 $\bar{S}_t$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t$를 구합니다. 즉, $\hat{S}_t=\bar{S}_t\times \sum_{t=1}^{d}12/\bar{S}_t$를 계산합니다.
+ $y_t / \hat{TC_t}$계열에 대해 계절별로 평균치 $\bar{S_{t}}$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S_{t}}$를 구합니다. 즉, $\hat{S_{t}}=\bar{S_{t}}\times \sum_{t=1}^{d}12/\bar{S_{t}}$를 계산합니다.
 
-***STEP3***
+***STEP4***
 
  Remainder component인 $\hat{R}_t=y_t/(\hat{TC_t} \times \hat{S}_t)$를 계산합니다.
 

@@ -67,15 +67,15 @@ Classical Decomposition
 
 ***STEP2***
 
-  $S_{t}+I_{t}$의 추정치 $y_{t}-\hat{TC_{t}}$를 계산합니다.
+$S_{t}+I_{t}$의 추정치 $y_{t}-\hat{TC_{t}}$를 계산합니다.
 
 ***STEP3***
 
- $y_t-\hat{TC_t}$계열에 대해 계절별로 평균치 $\bar{S}_t $를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t $를 구합니다. 즉, $\hat{S}_t=\bar{S}_t-\sum_{t=1}^{d}\bar{S}_t/d$를 계산합니다.
+$ y_t-\hat{TC}_t $계열에 대해 계절별로 평균치 $\bar{S}_t $를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t $를 구합니다. 즉, $\hat{S}_t=\bar{S}_t-\sum_{t=1}^{d}\bar{S}_t/d$를 계산합니다.
 
 ***STEP3***
 
- Remainder component인 $\hat{R}_t=y_t-\hat{TC_t}-\hat{S}_t$를 계산합니다.
+Remainder component인 $ \hat{R}_t=y_t-\hat{TC}_t-\hat{S}_t $를 계산합니다.
 
  <br>
 

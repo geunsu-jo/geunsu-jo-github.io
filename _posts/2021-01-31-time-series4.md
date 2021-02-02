@@ -1,10 +1,11 @@
 ---
 layout: single   
-title: "[시계열 분석]R에서 tidyverse를 활용한 분해법(Decomposition)"   
-excerpt: "이동평균법과 지수평활법을 소개하고 R을 활용하여 실습을 진행합니다."   
+title: "[시계열 분석]R에서 tidyverse를 활용한 시계열 분해법(Decomposition)"   
+excerpt: "R에서 tidyverse를 활용하여 분해법을 진행합니다."   
 tags:
   - time series
   - R
+  - decomposition
 comments: true
 toc: true
 toc_sticky: true
@@ -18,7 +19,19 @@ output:
 
 ---
 
+<br>
 
+R의 `tidyverse` 패키지를 활용해 요소분해법(decomposition)을 진행합니다. 방법론에 대한 자세한 설명은 생략하고, R코드로 어떻게 구현하는지 중점적으로 알아보겠습니다.
+
+
+
+## 분해법이란?
+
+ 시계열자료는 추세요인, 계절요인, 주기요인, 순환요인으로 총 4가지 요인으로 구성됩니다. 즉, 시계열자료에는 여러 요인들이 중첩되어 있는데, 분해법을 활용하면 이 요인들을 분해할 수 있습니다. 예를 들어, 경제성장은 계절요인과 추세요인이 모두 영향을 미치는데, 만약 장기적인 경제성장을 예측하는게 목적이라면 계절성분을 제거하고 추세성분만 남겨야합니다. 이런 경우 분해법을 진행하면 관심있는 요인인 추세만을 남길 수 있습니다. 또한 분해법을 잔차(Residuals)를 우연변동(Random Variation)에 의한 정상시계열(Stationary Time Series)로 만들 수 있습니다.
+
+<br>
+
+우선 시계열분석에 필요한 library를 불러옵니다. R에서 제공하는 기본함수 `plot()`을 사용하여 시각화할 수 있지만, `ggplot2`패키지의 `autoplot()`를 사용하면 더 깔끔한 그래프를 출력할 수 있습니다. 
 
 ``` r
 library(tidyverse)
@@ -35,20 +48,48 @@ library(gridExtra)
 autoplot(AirPassengers)
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-2-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-2-1.png)
 
-클래식
+
+
+Classical Decomposition
 ------
 
-\#\#\#가법
+ 가장 기본적인 분해법이고, 다른 분해법에 비해 상대적으로 절차가 간단합니다. 또한 많은 분해법들이 이 Classical Decomposition을 기반으로 만들어졌습니다. 계절변동이 상수일 때(상수계절변동)와  확률적일 때(이동계절변동) 계절변동 $\hat{S}$을 구하는 과정이 다릅니다. 여기서는 상수계절변동만 다룹니다.
+
+### 가법분해모형(Additive Decompositon)
+
+가법분해모형은 계절변동이 규칙적이고 추세에 의존적이지 않을 경우 적합한 모형으로   $Y_{t}=TC_{t}+S_{t}+I_{t}$ 을 가정합니다. 모형을 분해하는 절차는 다음과 같습니다.
+
+***STEP1***
+
+ 이동평균(Moving Average)를 사용하여 추정치 $\hat{TC_{t}}$를 구합니다. 이를 $CMA_{t,d}$(시점 t에서 d개항을 이동평균)라고 합니다.
+
+***STEP2***
+
+  $S_{t}+I_{t}$의 추정치 $y_{t}-\hat{TC_{t}}$를 계산합니다.
+
+***STEP3***
+
+ $y_{t}-\hat{TC_{t}}$계열에 대해 계절별로 평균치 $\bar{S}_{t}$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_{t}$를 구합니다. 즉, $\hat{S}_{t}=\bar{S}_{t}-\sum_{t=1}^{d}\bar{S}_{t}/d$를 계산합니다.
+
+***STEP3***
+
+ Remainder component인 $\hat{R}_{t}=y_{t}-\hat{TC_{t}}-\hat{S}_{t}$를 계산합니다.
+
+ <br>
+
+위의 절차를 `decompose()`함수를 사용하면 쉽게 구할 수 있습니다.
 
 ``` r
 decompose(AirPassengers, type="additive") %>% autoplot()
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-3-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-3-1.png)
 
-가법
+ 
+
+data, seasonal, trend, remainder로 구성된 4개의 plot을 출력했습니다. `decompose()`가 가지는 values는 다음과 같습니다. 
 
 ``` r
 #decomposition
@@ -59,6 +100,8 @@ add_decompose %>% names()
     ## [1] "x"        "seasonal" "trend"    "random"   "figure"   "type"
 
 ``` r
+#add_decompose$seasonal
+#add_decompose$$random
 add_decompose$trend
 ```
 
@@ -89,10 +132,9 @@ add_decompose$trend
     ## 1959 437.7083 440.9583 445.8333 450.6250
     ## 1960       NA       NA       NA       NA
 
-``` r
-#add_decompose$seasonal
-#add_decompose$$random
-```
+ 처음과 마지막 몇 개의 관측치가 제거되었습니다. Classical Decomposition의 특징 중 하나입니다. 예를 들어서 d=12라면, 처음 6개, 마지막 6개의 관측치가 제거됩니다. 따라서 remainder에서도 관측치가 같이 제거됩니다.
+
+ 다음은 원 시계열자료에서 계절 및 추세-주기를 제거한 그림입니다. 가법모형을 가정했기 때문에, 단순히 빼주기만 하면 됩니다.
 
 ``` r
 # remove seasonal effects
@@ -106,18 +148,42 @@ grid.arrange(
 )
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-6-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-6-1.png)
 
-### 승법
+### 승법분해모형(Multiplicative Decompositon)
+
+ 승법분해모형은 계절변동이 규칙적이고 추세에 의존적인 경우 적합한 모형으로   $Y_{t}=TC_{t}\times S_{t}\times I_{t}$ 을 가정합니다. 모형을 분해하는 절차는 다음과 같습니다.
+
+***STEP1***
+
+ 이동평균(Moving Average)를 사용하여 추정치 $\hat{TC_{t}}$를 구합니다. 이를 $CMA_{t,d}$(시점 t에서 d개항을 이동평균)라고 합니다.
+
+***STEP2***
+
+  $S_{t}*I_{t}$의 추정치 $y_{t}/\hat{TC_{t}}$를 계산합니다.
+
+***STEP3***
+
+ $y_{t}/\hat{TC_{t}}$계열에 대해 계절별로 평균치 $\bar{S}_{t}$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_{t}$를 구합니다. 즉, $\hat{S}_{t}=\bar{S}_{t}\times \sum_{t=1}^{d}12/\bar{S}_{t}를 계산합니다.
+
+***STEP3***
+
+ Remainder component인 $\hat{R}_{t}=y_{t}/(\hat{TC_{t}} \times \hat{S}_{t})$를 계산합니다.
+
+ <br>
+
+승법분해모형 역시 `decompose()`를 사용하여 쉽게 구할 수 있습니다.
 
 ``` r
 decompose(AirPassengers, type="multiplicative") %>% autoplot()
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-7-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-7-1.png)
+
+원시계열자료에서 계절 및 추세를 제거한 그림입니다. 승법모형이기 때문에 원시계열에서 요인을 나눠야합니다.
 
 ``` r
-#decomposition
+# decomposition
 mul_decompose <- decompose(AirPassengers, type="multiplicative")
 
 # remove seasonal, trend effects
@@ -136,9 +202,11 @@ grid.arrange(
 )
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-8-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-8-1.png)
 
 ### stationary test
+
+ 마지막으로 remainder component가 정상성을 만족하는지 확인합니다.
 
 ``` r
 #Stationary for random variation after trend and seaso
@@ -168,27 +236,59 @@ tseries::kpss.test(mul_decompose$random, null = "Level")
     ## data:  mul_decompose$random
     ## KPSS Level = 0.033058, Truncation lag parameter = 4, p-value = 0.1
 
+가법분해모형과 승법분해모형 모두 아주 큰 p-value를 가지는 것으로 보아, 정상성을 만족함을 알 수 있습니다. 마지막으로 remainder component의 time plot과 ACF, PACF를 출력합니다. `ggplot2`패키지의 `ggtsdisplay()`를 사용하면 깔끔한 이미지를 출력합니다.
+
+**Additive Model**
+
 ``` r
 ggtsdisplay(add_decompose$random, main="Random/ Additive model")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-11-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-11-1.png)
+
+
+
+**Multiplicative Model**
 
 ``` r
 ggtsdisplay(mul_decompose$random, main="Random/ Multiplicative model")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-12-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-12-1.png)
 
-SEAS
+
+
+### Classical Decomposition의 한계
+
+ Classical Decomposition은 다음과 같은 이유로 주로 사용되지는 않습니다.
+
+* trend-cycle 요인의 처음과 마지막 몇개의 관측치를 제거해버립니다.
+* trend-cycle 요인을 over-smooth하게 만듭니다.(여기서는 잘 분해 되었지만, 일부 데이터는 너무 Flexible?한 결과를 만들어냅니다.)
+* 이 분해법은 계절 성분이 해마다 반복되기를 가정합니다. (예를 들어, 에어컨이 등장하기 이전에 전기소모량은 겨울에 최대수요를 가졌지만, 현재는 여름에 최대수요를 가집니다. 고전 분해법은 이러한 계절변화를 반영하지 못합니다.)
+
+
+
+다양한 분해법들
 ----
+
+ 앞서 Classical Decomposition의 단점들로 인해, 이를 대신하여 다양한 분해법들이 등장합니다. 대표적인 3가지 분해법(X11, SEATS, STL)을 R로 어떻게 구현하는지 알아봅니다. 
+
+
+
+### SEATS와 X11
+
+ Classical Decomposition가 가지는 단점들을 보완하여 만들어졌습니다. 우선 Classical Decomposition과 달리 trend-cycle에 누락된 값을 가지지 않도록 합니다. 또한, 시간에 따른 계절요인 변화를 반영합니다. 시계열자료의 이동이나 이상치에 대해서도 robust한 성질을 가집니다. 다만, 월별이나 분기별 자료에만 적용이 가능하므로 일별 데이터, 시간별 데이터같은 경우는 다른 방법을 사용해야합니다. 
+
+ R에서 `seasonal`패키지의 `seas()`함수를 사용하면 SEATS Decomposition과 X11 Decomposition을 사용할 수 있습니다. 우선 데이터의 time plot을 확인하고, Decomposition을 진행합니다.
 
 ``` r
 data(elecequip)
 autoplot(elecequip)
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-13-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-13-1.png)
+
+`seas()`에 default는 SEATS decomposition이기에, 데이터만 입력하면 SEATS를 진행합니다.
 
 ``` r
 #seasonal::seas
@@ -197,23 +297,22 @@ seas(elecequip) %>%
   ggtitle("SEATS decomposition of electrical equipment index")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-14-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-14-1.png)
 
-X11
+`seas(X11="")`을 사용하면 X11-decomposition을 사용할 수 있습니다. 
 
 ``` r
-# seasonal effect fitting
-
 fit_X11 <- elecequip %>% seas(x11="")
 #A decomposition of the new orders index for electrical equipment.
 autoplot(fit_X11) +
   ggtitle("X11 decomposition of electrical equipment index")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-15-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-15-1.png)
+
+`forcast`패키지의 `trendcycle()`함수를 사용하면 추세만 뽑아낼 수 있습니다. 그 외에도 `seasonal()`와 `remainder()` 을 사용하면 각 요인들을 뽑아낼 수 있습니다. `seasadj()`는 seasonally adjusted time series을 계산합니다.
 
 ``` r
-#the trend-cycle component and the seasonally adjusted data, along with the original data.
 elecequip %>% autoplot(series="Data") +
   autolayer(trendcycle(fit_X11), series="Trend") +
   autolayer(seasadj(fit_X11), series="Seasonally Adjusted") +
@@ -223,143 +322,132 @@ elecequip %>% autoplot(series="Data") +
   ggtitle("Electrical equipment manufacturing (Euro area)")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-16-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-16-1.png)
+
+`ggplot2`패키지의 `ggsubseriesplot()`을 사용하면, sub-series plot을 그릴 수 있습니다. sub-series plot은 시간에 따른 개별 계절요소(여기서는 월별)의 변화를 시각화한 그림입니다. 
 
 ``` r
-#Seasonal sub-series plot of the seasonal component from the X11 decomposition of the new orders index for electrical equipment.
 fit_X11 %>% seasonal() %>% ggsubseriesplot() + ylab("Seasonal")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-17-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-17-1.png)
+
+마지막으로 X11-decomposition한 데이터의 trend-cycle값들을 확인해봅니다.
 
 ``` r
-fit_X11 %>% seasonal()
-```
-
-    ##            Jan       Feb       Mar       Apr       May       Jun       Jul
-    ## 1996 0.9628125 0.9562196 1.0787077 0.9240527 0.9602618 1.0654318 0.9937084
-    ## 1997 0.9613081 0.9559650 1.0793118 0.9245328 0.9610442 1.0639506 0.9915282
-    ## 1998 0.9554082 0.9555897 1.0813380 0.9255580 0.9620210 1.0644458 0.9863023
-    ## 1999 0.9475910 0.9543890 1.0847655 0.9269032 0.9619855 1.0664640 0.9799758
-    ## 2000 0.9413035 0.9519621 1.0875453 0.9269032 0.9589119 1.0712342 0.9748868
-    ## 2001 0.9365600 0.9490127 1.0899088 0.9280976 0.9536751 1.0748703 0.9732997
-    ## 2002 0.9340240 0.9452993 1.0904548 0.9295271 0.9463729 1.0805392 0.9750599
-    ## 2003 0.9332209 0.9428297 1.0881845 0.9328272 0.9416744 1.0844164 0.9782025
-    ## 2004 0.9351781 0.9410086 1.0840027 0.9356228 0.9401677 1.0881185 0.9811048
-    ## 2005 0.9378424 0.9388581 1.0806029 0.9406105 0.9414372 1.0884971 0.9820920
-    ## 2006 0.9405471 0.9360723 1.0797830 0.9440883 0.9430846 1.0899306 0.9826868
-    ## 2007 0.9424575 0.9321518 1.0801219 0.9476678 0.9451361 1.0909026 0.9826233
-    ## 2008 0.9448655 0.9289804 1.0816976 0.9481082 0.9475395 1.0922946 0.9843773
-    ## 2009 0.9460184 0.9264027 1.0826834 0.9486275 0.9496769 1.0930685 0.9869891
-    ## 2010 0.9475988 0.9249435 1.0845336 0.9468247 0.9513670 1.0940984 0.9913414
-    ## 2011 0.9474725 0.9238434 1.0857337 0.9464715 0.9526125 1.0953216 0.9937929
-    ##            Aug       Sep       Oct       Nov       Dec
-    ## 1996 0.8090371 1.0717420 1.0337734 1.0381106 1.1071093
-    ## 1997 0.8115577 1.0735762 1.0334726 1.0365928 1.1105889
-    ## 1998 0.8157359 1.0745788 1.0310465 1.0361709 1.1170680
-    ## 1999 0.8178071 1.0759546 1.0290429 1.0372293 1.1243332
-    ## 2000 0.8195772 1.0767566 1.0281509 1.0386754 1.1298090
-    ## 2001 0.8187270 1.0792815 1.0286044 1.0405238 1.1322190
-    ## 2002 0.8184566 1.0809589 1.0285355 1.0426357 1.1295827
-    ## 2003 0.8178020 1.0845353 1.0306346 1.0418448 1.1216434
-    ## 2004 0.8196732 1.0877592 1.0323953 1.0373860 1.1130418
-    ## 2005 0.8238924 1.0898014 1.0346772 1.0320863 1.1046076
-    ## 2006 0.8282716 1.0883718 1.0341749 1.0307196 1.0988676
-    ## 2007 0.8327034 1.0841421 1.0340074 1.0320989 1.0924416
-    ## 2008 0.8358559 1.0775197 1.0318958 1.0352849 1.0898591
-    ## 2009 0.8383901 1.0706803 1.0295571 1.0384927 1.0871217
-    ## 2010 0.8384502 1.0652673 1.0263742 1.0419164 1.0864768
-    ## 2011 0.8379636 1.0623103 1.0244167 1.0436695
-
-``` r
-#fit_X11 %>% trendcycle()
+fit_X11 %>% trendcycle()
+#fit_X11 %>% seasonal()
 #fit_X11 %>% remainder()
 #fit_X11 %>% seasadj()
 ```
 
-STL
----
+    ##            Jan       Feb       Mar       Apr       May       Jun       Jul
+    ## 1996  80.69206  80.21826  79.64028  79.15552  78.80442  78.67565  78.82602
+    ## 1997  81.66166  81.98161  82.29085  82.71590  83.22066  83.83856  84.56604
+    ## 1998  87.19999  87.38624  87.39773  87.12897  86.57215  85.76778  84.83710
+    ## 1999  84.53125  85.03363  85.89373  87.25954  89.14995  91.33331  93.43757
+    ## 2000 101.68364 103.81345 105.77860 107.41559 108.78674 109.96509 111.18464
+    ## 2001 110.60215 109.12131 107.59654 105.93034 103.93652 101.67300  99.38903
+    ## 2002  95.76579  95.55152  95.13388  94.57931  94.07525  93.70515  93.35840
+    ## 2003  91.63771  91.38688  91.31626  91.50970  92.00312  92.75321  93.75358
+    ## 2004  97.40030  97.51860  97.60667  97.68457  97.68341  97.54801  97.28749
+    ## 2005  96.92109  97.12912  97.44735  97.95973  98.64121  99.46164 100.29810
+    ## 2006 105.32100 106.58927 107.70511 108.56282 109.21568 109.76428 110.21101
+    ## 2007 110.69642 110.98731 111.45415 111.94593 112.28188 112.34821 112.28775
+    ## 2008 114.66977 114.18420 113.13533 111.60582 109.85561 108.08622 106.26599
+    ## 2009  81.55544  80.22452  79.27926  78.70523  78.51121  78.70632  79.37416
+    ## 2010  84.83880  85.77358  86.86819  88.11179  89.28367  90.25493  90.89101
+    ## 2011  94.72582  95.02912  95.05018  94.73001  94.14723  93.34093  92.37354
+    ##            Aug       Sep       Oct       Nov       Dec
+    ## 1996  79.22557  79.69558  80.21041  80.73628  81.23312
+    ## 1997  85.26434  85.89531  86.40020  86.72235  86.96493
+    ## 1998  84.06165  83.66278  83.63464  83.85684  84.16727
+    ## 1999  95.15212  96.33018  97.21209  98.24713  99.75250
+    ## 2000 112.34667 113.18722 113.47955 113.07298 112.00472
+    ## 2001  97.46494  96.22518  95.67720  95.60038  95.72240
+    ## 2002  93.00565  92.69495  92.42951  92.18984  91.93794
+    ## 2003  94.82139  95.76901  96.47235  96.91711  97.20500
+    ## 2004  97.02119  96.82821  96.70843  96.72900  96.81116
+    ## 2005 101.04100 101.70081 102.35850 103.12541 104.11420
+    ## 2006 110.54285 110.72255 110.79863 110.73869 110.63011
+    ## 2007 112.35150 112.69862 113.26339 113.95934 114.53845
+    ## 2008 104.20121 101.90335  99.51121  97.14660  94.91518
+    ## 2009  80.41400  81.53681  82.50617  83.30075  84.02984
+    ## 2010  91.35976  91.88962  92.59944  93.39884  94.15279
+    ## 2011  91.31287  90.19764  89.16781  88.27430
+
+Classical Decomposition과 달리, X-11 Decomposition은 처음과 마지막 값을 함께 출력합니다.
+
+
+
+### STL Decomposition
+
+STL은 Classical, X11, SEATS Decomposition에 비해 다음과 같은 특징을 가집니다.
+
+* SEATS, X11과 달리, STL은 월별과 분기별 이외에 여러 계절유형을 다룰 수 있습니다.
+* 시간의 따른 계절요소 변화를 적용할 수 있으며, 얼만큼 변하는지 사용자가 통제할 수 있습니다.
+* 이상치에 robust한 성질을가집니다.
+* smoothness of trend-cycle를 사용자가 조절할 수 있습니다.
+* trading day calendar variation을 자동적으로 다루지는 못합니다.
+* 가법모형만 제공하며, 승법모형을 사용하기 위해서는 Box-Cox변환을 해야합니다.
+
+
+
+R에서
 
 ``` r
 #stats::stl
-air_stl <- stl(AirPassengers, "periodic")
-air_stl %>% str()
-```
 
-    ## List of 8
-    ##  $ time.series: Time-Series [1:144, 1:3] from 1949 to 1961: -25.5 -35.22 -3.03 -8.3 -5.74 ...
-    ##   ..- attr(*, "dimnames")=List of 2
-    ##   .. ..$ : NULL
-    ##   .. ..$ : chr [1:3] "seasonal" "trend" "remainder"
-    ##  $ weights    : num [1:144] 1 1 1 1 1 1 1 1 1 1 ...
-    ##  $ call       : language stl(x = AirPassengers, s.window = "periodic")
-    ##  $ win        : Named num [1:3] 1441 19 13
-    ##   ..- attr(*, "names")= chr [1:3] "s" "t" "l"
-    ##  $ deg        : Named int [1:3] 0 1 1
-    ##   ..- attr(*, "names")= chr [1:3] "s" "t" "l"
-    ##  $ jump       : Named num [1:3] 145 2 2
-    ##   ..- attr(*, "names")= chr [1:3] "s" "t" "l"
-    ##  $ inner      : int 2
-    ##  $ outer      : int 0
-    ##  - attr(*, "class")= chr "stl"
+stl_fit <- stl(elecequip, s.window="periodic")
+stl_fit_robust <- stl(elecequip, s.window="periodic", robust = T)
+```
 
 ``` r
-air_stl %>% autoplot()
+grid.arrange(
+  stl_fit %>% autoplot() + ggtitle("No Robust Model"),
+  stl_fit_robust %>% autoplot() + ggtitle("Robust Model"), 
+  nrow=1, ncol=2
+)
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-20-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-20-1.png)
 
 ``` r
-#forecast::seasadj
-#Returns seasonally adjusted data constructed by removing the seasonal component.
-air_ss <- seasadj(air_stl)
-seasonal_index <- sindexf(air_stl, h=24)
-seasonal_index
+forecast_stl <- forecast::forecast(stl_fit_robust)
+forecast_stl
 ```
 
-    ##             Jan        Feb        Mar        Apr        May        Jun
-    ## 1961 -25.497718 -35.220935  -3.027478  -8.299054  -5.737289  32.336634
-    ## 1962 -25.497718 -35.220935  -3.027478  -8.299054  -5.737289  32.336634
-    ##             Jul        Aug        Sep        Oct        Nov        Dec
-    ## 1961  70.243882  68.049433  17.438326 -21.063432 -57.481851 -31.740516
-    ## 1962  70.243882  68.049433  17.438326 -21.063432 -57.481851 -31.740516
+    ##          Point Forecast    Lo 80     Hi 80    Lo 95     Hi 95
+    ## Dec 2011       96.60043 92.72916 100.47170 90.67983 102.52103
+    ## Jan 2012       81.19582 76.77071  85.62093 74.42820  87.96345
+    ## Feb 2012       80.05010 74.86809  85.23210 72.12491  87.97529
+    ## Mar 2012       93.52743 87.47376  99.58109 84.26915 102.78571
+    ## Apr 2012       78.80554 71.82787  85.78321 68.13412  89.47697
+    ## May 2012       79.76644 71.85043  87.68246 67.65995  91.87294
+    ## Jun 2012       91.99761 83.15082 100.84440 78.46762 105.52761
+    ## Jul 2012       82.12229 72.36447  91.88011 67.19899  97.04559
+    ## Aug 2012       66.74844 56.10573  77.39116 50.47181  83.02507
+    ## Sep 2012       90.61892 79.12041 102.11742 73.03347 108.20436
+    ## Oct 2012       86.31835 73.99406  98.64265 67.46997 105.16674
+    ## Nov 2012       86.95536 73.83497 100.07576 66.88945 107.02128
+    ## Dec 2012       92.79427 78.90644 106.68209 71.55468 114.03386
+    ## Jan 2013       78.15089 63.52292  92.77887 55.77934 100.52245
+    ## Feb 2013       77.61415 62.27172  92.95658 54.14993 101.07837
+    ## Mar 2013       91.57867 75.54584 107.61151 67.05857 116.09877
+    ## Apr 2013       77.24654 60.54573  93.94735 51.70485 102.78822
+    ## May 2013       78.51924 61.17132  95.86716 51.98788 105.05060
+    ## Jun 2013       90.99985 73.02420 108.97550 63.50846 118.49124
+    ## Jul 2013       81.32408 62.73871  99.90945 52.90021 109.74795
+    ## Aug 2013       66.10987 46.93151  85.28823 36.77910  95.44064
+    ## Sep 2013       90.10806 70.35227 109.86385 59.89419 120.32193
+    ## Oct 2013       85.90967 65.59094 106.22840 54.83485 116.98449
+    ## Nov 2013       86.62842 65.76024 107.49659 54.71329 118.54354
 
 ``` r
-forecast_air <- forecast::forecast(air_stl)
-forecast_air
+autoplot(forecast_stl)
 ```
 
-    ##          Point Forecast    Lo 80    Hi 80    Lo 95    Hi 95
-    ## Jan 1961       438.2412 416.3447 460.1376 404.7535 471.7289
-    ## Feb 1961       428.5180 397.5533 459.4826 381.1616 475.8743
-    ## Mar 1961       460.7114 422.7882 498.6346 402.7129 518.7099
-    ## Apr 1961       455.4398 411.6503 499.2294 388.4695 522.4102
-    ## May 1961       458.0016 409.0436 506.9596 383.1268 532.8764
-    ## Jun 1961       496.0755 442.4449 549.7061 414.0546 578.0964
-    ## Jul 1961       533.9828 476.0552 591.9103 445.3903 622.5753
-    ## Aug 1961       531.7883 469.8613 593.7153 437.0791 626.4975
-    ## Sep 1961       481.1772 415.4938 546.8607 380.7231 581.6314
-    ## Oct 1961       442.6755 373.4391 511.9118 336.7876 548.5633
-    ## Nov 1961       406.2570 333.6414 478.8727 295.2010 517.3131
-    ## Dec 1961       431.9984 356.1539 507.8429 316.0042 547.9925
-    ## Jan 1962       438.2412 359.2998 517.1826 317.5107 558.9716
-    ## Feb 1962       428.5180 346.5966 510.4393 303.2301 553.8058
-    ## Mar 1962       460.7114 375.9148 545.5080 331.0262 590.3966
-    ## Apr 1962       455.4398 367.8623 543.0173 321.5016 589.3780
-    ## May 1962       458.0016 367.7288 548.2744 319.9413 596.0619
-    ## Jun 1962       496.0755 403.1856 588.9654 354.0127 638.1384
-    ## Jul 1962       533.9828 438.5475 629.4180 388.0271 679.9384
-    ## Aug 1962       531.7883 433.8738 629.7028 382.0410 681.5356
-    ## Sep 1962       481.1772 380.8447 581.5097 327.7319 634.6225
-    ## Oct 1962       442.6755 339.9819 545.3690 285.6192 599.7317
-    ## Nov 1962       406.2570 301.2555 511.2586 245.6711 566.8430
-    ## Dec 1962       431.9984 324.7385 539.2582 267.9586 596.0382
-
-``` r
-autoplot(forecast_air)
-```
-
-![](/assets/images/time_series/decomposition/unnamed-chunk-23-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-22-1.png)
 
 Visualization
 -------------
@@ -377,18 +465,13 @@ a10 %>% head(18)
     ## 1992 3.777202 3.924490 4.386531 5.810549
 
 ``` r
-#glimpse(a10)
-#str(a10)
-```
-
-``` r
 #Monthly sales of antidiabetic drugs in Australia.
 autoplot(a10) +
   ggtitle("Antidiabetic drug sales") +
   xlab("Year") + ylab("$ million")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-25-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-24-1.png)
 
 ``` r
 #Seasonal plot of monthly antidiabetic drug sales in Australia.
@@ -397,7 +480,7 @@ ggseasonplot(a10, year.labels=TRUE, year.labels.left=F) +
   ggtitle("Seasonal plot: antidiabetic drug sales")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-26-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-25-1.png)
 
 ``` r
 #Polar seasonal plot of monthly antidiabetic drug sales in Australia.
@@ -406,7 +489,7 @@ ggseasonplot(a10, polar=TRUE) +
   ggtitle("Polar seasonal plot: antidiabetic drug sales")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-27-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-26-1.png)
 
 ``` r
 #Seasonal subseries plot of monthly antidiabetic drug sales in Australia.
@@ -415,7 +498,7 @@ ylab("$ million") +
 ggtitle("Seasonal subseries plot: antidiabetic drug sales")
 ```
 
-![](/assets/images/time_series/decomposition/unnamed-chunk-28-1.png)
+![](/assets/images/time_series/decomposition2/unnamed-chunk-27-1.png)
 
 ``` r
 # ACF
@@ -427,5 +510,5 @@ grid.arrange(
   nrow=2, ncol=2
 )
 ```
-![](/assets/images/time_series/decomposition/unnamed-chunk-29-1.png)
 
+![](/assets/images/time_series/decomposition2/unnamed-chunk-28-1.png)

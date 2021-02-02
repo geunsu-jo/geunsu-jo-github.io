@@ -29,7 +29,7 @@ R의 `tidyverse` 패키지를 활용해 요소분해법(decomposition)을 진행
 
  시계열자료는 추세요인, 계절요인, 주기요인, 순환요인으로 총 4가지 요인으로 구성됩니다. 즉, 시계열자료에는 여러 요인들이 중첩되어 있는데, 분해법을 활용하면 이 요인들을 분해할 수 있습니다. 예를 들어, 경제성장은 계절요인과 추세요인이 모두 영향을 미치는데, 만약 장기적인 경제성장을 예측하는게 목적이라면 계절성분을 제거하고 추세성분만 남겨야합니다. 이런 경우 분해법을 진행하면 관심있는 요인인 추세만을 남길 수 있습니다. 또한 분해법을 잔차(Residuals)를 우연변동(Random Variation)에 의한 정상시계열(Stationary Time Series)로 만들 수 있습니다.
 
-<br>
+
 
 우선 시계열분석에 필요한 library를 불러옵니다. R에서 제공하는 기본함수 `plot()`을 사용하여 시각화할 수 있지만, `ggplot2`패키지의 `autoplot()`를 사용하면 더 깔끔한 그래프를 출력할 수 있습니다. 
 
@@ -57,13 +57,13 @@ Classical Decomposition
 
  가장 기본적인 분해법이고, 다른 분해법에 비해 상대적으로 절차가 간단합니다. 또한 많은 분해법들이 이 Classical Decomposition을 기반으로 만들어졌습니다. 계절변동이 상수일 때(상수계절변동)와  확률적일 때(이동계절변동) 계절변동 $\hat{S}$을 구하는 과정이 다릅니다. 여기서는 상수계절변동만 다룹니다.
 
-### 가법분해모형(Additive Decompositon)
+### 가법분해모형
 
 가법분해모형은 계절변동이 규칙적이고 추세에 의존적이지 않을 경우 적합한 모형으로   $Y_{t}=TC_{t}+S_{t}+I_{t}$ 을 가정합니다. 모형을 분해하는 절차는 다음과 같습니다.
 
 ***STEP1***
 
- 이동평균(Moving Average)를 사용하여 추정치 $\hat{TC_{t}}$를 구합니다. 이를 $CMA_{t,d}$(시점 t에서 d개항을 이동평균)라고 합니다.
+ 이동평균(Moving Average)를 사용하여 추정치 $\hat{TC_{t}}$를 구합니다. 이를 $CMA_{t,d}$(시점 t에서 d개항을 중심이동평균)라고 합니다.
 
 ***STEP2***
 
@@ -71,11 +71,11 @@ Classical Decomposition
 
 ***STEP3***
 
- $y_{t}-\hat{TC_{t}}$계열에 대해 계절별로 평균치 $\bar{S}_{t}$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_{t}$를 구합니다. 즉, $\hat{S}_{t}=\bar{S}_{t}-\sum_{t=1}^{d}\bar{S}_{t}/d$를 계산합니다.
+ $y_{t}-\hat{TC_{t}}$계열에 대해 계절별로 평균치 $\bar{S}_t$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t$를 구합니다. 즉, $\hat{S}_t=\bar{S}_t-\sum_{t=1}^{d}\bar{S}_t/d$를 계산합니다.
 
 ***STEP3***
 
- Remainder component인 $\hat{R}_{t}=y_{t}-\hat{TC_{t}}-\hat{S}_{t}$를 계산합니다.
+ Remainder component인 $\hat{R}_t=y_t-\hat{TC_t}-\hat{S}_t$를 계산합니다.
 
  <br>
 
@@ -150,7 +150,7 @@ grid.arrange(
 
 ![](/assets/images/time_series/decomposition2/unnamed-chunk-6-1.png)
 
-### 승법분해모형(Multiplicative Decompositon)
+### 승법분해모형
 
  승법분해모형은 계절변동이 규칙적이고 추세에 의존적인 경우 적합한 모형으로   $Y_{t}=TC_{t}\times S_{t}\times I_{t}$ 을 가정합니다. 모형을 분해하는 절차는 다음과 같습니다.
 
@@ -164,11 +164,11 @@ grid.arrange(
 
 ***STEP3***
 
- $y_{t}/\hat{TC_{t}}$계열에 대해 계절별로 평균치 $\bar{S}_{t}$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_{t}$를 구합니다. 즉, $\hat{S}_{t}=\bar{S}_{t}\times \sum_{t=1}^{d}12/\bar{S}_{t}를 계산합니다.
+ $y_{t}/\hat{TC_{t}}$계열에 대해 계절별로 평균치 $\bar{S}_t$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t$를 구합니다. 즉, $\hat{S}_t=\bar{S}_t\times \sum_{t=1}^{d}12/\bar{S}_t$를 계산합니다.
 
 ***STEP3***
 
- Remainder component인 $\hat{R}_{t}=y_{t}/(\hat{TC_{t}} \times \hat{S}_{t})$를 계산합니다.
+ Remainder component인 $\hat{R}_t=y_t/(\hat{TC_t} \times \hat{S}_t)$를 계산합니다.
 
  <br>
 
@@ -204,7 +204,7 @@ grid.arrange(
 
 ![](/assets/images/time_series/decomposition2/unnamed-chunk-8-1.png)
 
-### stationary test
+### 정상성 검정(stationary test)
 
  마지막으로 remainder component가 정상성을 만족하는지 확인합니다.
 
@@ -275,7 +275,7 @@ ggtsdisplay(mul_decompose$random, main="Random/ Multiplicative model")
 
 
 
-### SEATS와 X11
+### SEATS와 X11 Decomposition
 
  Classical Decomposition가 가지는 단점들을 보완하여 만들어졌습니다. 우선 Classical Decomposition과 달리 trend-cycle에 누락된 값을 가지지 않도록 합니다. 또한, 시간에 따른 계절요인 변화를 반영합니다. 시계열자료의 이동이나 이상치에 대해서도 robust한 성질을 가집니다. 다만, 월별이나 분기별 자료에만 적용이 가능하므로 일별 데이터, 시간별 데이터같은 경우는 다른 방법을 사용해야합니다. 
 

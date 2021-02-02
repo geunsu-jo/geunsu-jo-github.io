@@ -71,7 +71,7 @@ Classical Decomposition
 
 ***STEP3***
 
- $y_{t}-\hat{TC_{t}}$계열에 대해 계절별로 평균치 $\bar{S}_t$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t$를 구합니다. 즉, $\hat{S}_t=\bar{S}_t-\sum_{t=1}^{d}\bar{S}_t/d$를 계산합니다.
+ $y_t-\hat{TC_t}$계열에 대해 계절별로 평균치 $\bar{S}_t $를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t $를 구합니다. 즉, $\hat{S}_t=\bar{S}_t-\sum_{t=1}^{d}\bar{S}_t/d$를 계산합니다.
 
 ***STEP3***
 
@@ -164,7 +164,7 @@ grid.arrange(
 
 ***STEP3***
 
- $y_{t}/\hat{TC_{t}}$계열에 대해 계절별로 평균치 $\bar{S}_t$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t$를 구합니다. 즉, $\hat{S}_t=\bar{S}_t\times \sum_{t=1}^{d}12/\bar{S}_t$를 계산합니다.
+ $y_t / \hat{TC_t}$계열에 대해 계절별로 평균치 $\bar{S}_t$를 구한 후, 그 합이 0이 되도록 조정하여 $\hat{S}_t$를 구합니다. 즉, $\hat{S}_t=\bar{S}_t\times \sum_{t=1}^{d}12/\bar{S}_t$를 계산합니다.
 
 ***STEP3***
 
@@ -386,18 +386,17 @@ STL은 Classical, X11, SEATS Decomposition에 비해 다음과 같은 특징을 
 
 * SEATS, X11과 달리, STL은 월별과 분기별 이외에 여러 계절유형을 다룰 수 있습니다.
 * 시간의 따른 계절요소 변화를 적용할 수 있으며, 얼만큼 변하는지 사용자가 통제할 수 있습니다.
-* 이상치에 robust한 성질을가집니다.
+* 이상치에 robust한 성질을 가집니다.
 * smoothness of trend-cycle를 사용자가 조절할 수 있습니다.
 * trading day calendar variation을 자동적으로 다루지는 못합니다.
 * 가법모형만 제공하며, 승법모형을 사용하기 위해서는 Box-Cox변환을 해야합니다.
 
 
 
-R에서
+R에서 `stl()`함수를 사용하면, STL Decomposition을 사용할 수 있습니다.  `s.window`는 default가 없으므로 반드시 명시해줘야합니다. 그 외에도 `robust`, `t.window`등이 있는데 자세한 내용은 ?stl로 옵션에 대한 설명을 얻을 수 있습니다. 여기서는 `robust=T` 유무에 따른 결과의 차이를 보겠습니다.
 
 ``` r
 #stats::stl
-
 stl_fit <- stl(elecequip, s.window="periodic")
 stl_fit_robust <- stl(elecequip, s.window="periodic", robust = T)
 ```
@@ -411,6 +410,10 @@ grid.arrange(
 ```
 
 ![](/assets/images/time_series/decomposition2/unnamed-chunk-20-1.png)
+
+2009년에 급격히 감소하는 이상치를 가집니다. 두 모델을 비교해보면, `robust=T`모델이 이상치에 robust한 trend-cycle을 만들었습니다.(2009년의 remainder를 살펴보면 robust모델이 더 큰 음의 값을 가지는 것을 보면 알 수 있습니다.)
+
+다음으로 `forcast()`를 사용하여 이후 24개 자료에 대한 예측을 진행합니다.
 
 ``` r
 forecast_stl <- forecast::forecast(stl_fit_robust)
@@ -452,6 +455,8 @@ autoplot(forecast_stl)
 Visualization
 -------------
 
+`ggplot2`패키지는 시계열자료를 시각화하기위한 여러 함수들을 제공합니다.  먼저 시각화할 시계열 데이터를 불러옵니다.
+
 ``` r
 data(a10)
 a10 %>% head(18)
@@ -473,6 +478,8 @@ autoplot(a10) +
 
 ![](/assets/images/time_series/decomposition2/unnamed-chunk-24-1.png)
 
+`ggseasonal()`을 사용하면 년도별로 계절요소(월별)에 따른 시계열 자료를 시각화할 수있습니다.
+
 ``` r
 #Seasonal plot of monthly antidiabetic drug sales in Australia.
 ggseasonplot(a10, year.labels=TRUE, year.labels.left=F) +
@@ -481,6 +488,8 @@ ggseasonplot(a10, year.labels=TRUE, year.labels.left=F) +
 ```
 
 ![](/assets/images/time_series/decomposition2/unnamed-chunk-25-1.png)
+
+`polar=TRUE` 옵션을 추가해봅니다.
 
 ``` r
 #Polar seasonal plot of monthly antidiabetic drug sales in Australia.
@@ -491,6 +500,8 @@ ggseasonplot(a10, polar=TRUE) +
 
 ![](/assets/images/time_series/decomposition2/unnamed-chunk-26-1.png)
 
+`ggsubseriesplot()`을 사용하여 sub-series plot을 그립니다.
+
 ``` r
 #Seasonal subseries plot of monthly antidiabetic drug sales in Australia.
 ggsubseriesplot(a10) +
@@ -499,6 +510,8 @@ ggtitle("Seasonal subseries plot: antidiabetic drug sales")
 ```
 
 ![](/assets/images/time_series/decomposition2/unnamed-chunk-27-1.png)
+
+`ggAcf()`와 `ggPacf()`를 사용하여 Acf와 Pacf를 시각화할 수 있습니다. 
 
 ``` r
 # ACF
